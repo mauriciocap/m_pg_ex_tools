@@ -13,31 +13,75 @@
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="js/3p/zepto.min.js"></script>
         <script type="text/javascript">
-						 function go() {
-								url= $('#url').val(); alert("GETTING '"+url+"'");
-								$.ajax({
-									url: url,
-									success: function(data){
-											alert("GOT "+data);
-											$('#inJs').val(data);
-								  }												
-								});
-						 }
 
-						 var Initialized= false;
-             function appReady() {
-							if (Initialized) { return true; }
-							Initialized= true;
-							$('#btnGet').on('click', function () { try { go();} catch(e) { alert("ERR:"+e) }; return false; });
-							$('#btnEval').on('click', function () { try { var js= $('#inJs').val(); alert("EVAL '"+js+"'"); eval(js); } catch(e) { alert("ERR:"+e) }; return false; });
-             }
-             document.addEventListener("deviceready", appReady, false);
-             document.addEventListener("DOMContentLoaded", appReady, false);
-        </script>
+	function onFail(d) {
+		alert("ERROR "+d);
+	}
+
+	function getFile() {
+		window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onGotFs, onFail);
+	} 
+
+	function onGotFs(fileSystem) {
+		var path= $('#url').val(); alert("GETTING FILE '"+url+"'");
+		fileSystem.root.getFile(path, {create: false}, onGotFileEntry, onFail);
+	}
+
+ 	function onGotFileEntry(fileEntry) {
+		fileEntry.file(onGotFile,onFail);
+	}
+
+	function onGotFile(file){
+        readDataUrl(file);
+        readAsText(file);
+  }
+
+    function readDataUrl(file) {
+        var reader = new FileReader();
+        reader.onloadend = function(evt) {
+            alert("READ URL "+evt.target.result);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function readAsText(file) {
+        var reader = new FileReader();
+        reader.onloadend = function(evt) {
+            alert("READ TXT "+evt.target.result);
+						$('#inJs').val(evt.target.result);
+        };
+        reader.readAsText(file);
+    }
+
+	function getHttp() {
+			url= $('#url').val(); alert("GETTING '"+url+"'");
+			$.ajax({
+				url: url,
+				success: function(data){
+						alert("GOT "+data);
+						$('#inJs').val(data);
+				}												
+			});
+	 }
+
+	 var Initialized= false;
+	 function appReady() {
+		if (Initialized) { return true; }
+		Initialized= true;
+		$('#btnGet').on('click', function () { try { getHttp();} catch(e) { alert("ERR:"+e) }; return false; });
+		$('#btnFile').on('click', function () { try { getFile(); } catch(e) { alert("ERR:"+e) }; return false; });
+
+		$('#btnEval').on('click', function () { try { var js= $('#inJs').val(); alert("EVAL '"+js+"'"); eval(js); } catch(e) { alert("ERR:"+e) }; return false; });
+	 }
+	 document.addEventListener("deviceready", appReady, false);
+	 document.addEventListener("DOMContentLoaded", appReady, false);
+</script>
 </head>
 <body>
 		 <input id="url"></br>
-		 <input id="btnGet" type="button" value="Get"> <input id="btnEval" type="button" value="Eval"></br>
+		 <input id="btnGet" type="button" value="Get">
+  	 <input id="btnFile" type="button" value="File"> 
+		 <input id="btnEval" type="button" value="Eval"></br>
      <textarea id="inJs" cols=80 rows=25>
      </textarea>
 </body>
