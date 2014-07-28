@@ -4,16 +4,11 @@
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
         <title>Your fastapp name here</title>
     </head>
     <body>
         <div class="app">
-            <h1>PhoneGap</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
-            </div>
+            <h1>FastApp Tools Ex</h1>
         </div>
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="js/3p/zepto.min.js"></script>
@@ -24,23 +19,26 @@
 									url: url,
 									success: function(data){
 											alert("GOT "+data);
-											$('#main').html(data);
+											$('#inJs').html(data);
 								  }												
 								});
 						 }
 
-             function appReady(){
+						 var Initialized= false;
+             function appReady() {
+							if (Initialized) { return true; }
+							Initialized= true;
 							$('#btnGet').on('click', function () { try { go();} catch(e) { alert("ERR:"+e) }; return false; });
-							$('#btnEval').on('click', function () { try { var js= $('main').val(); alert("EVAL '"+js+"'"); eval(js); } catch(e) { alert("ERR:"+e) }; return false; });
+							$('#btnEval').on('click', function () { try { var js= $('#inJs').val(); alert("EVAL '"+js+"'"); eval(js); } catch(e) { alert("ERR:"+e) }; return false; });
              }
              document.addEventListener("deviceready", appReady, false);
-             document.addEventListener("load", appReady, false);
+             document.addEventListener("DOMContentLoaded", appReady, false);
         </script>
 </head>
 <body>
 		 <input id="url"></br>
 		 <input id="btnGet" type="button" value="Get"> <input id="btnEval" type="button" value="Eval"></br>
-     <textarea id="main" cols=80 rows=25>
+     <textarea id="inJs" cols=80 rows=25>
      </textarea>
 </body>
 </html>
