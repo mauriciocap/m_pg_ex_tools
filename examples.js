@@ -51,7 +51,7 @@ function tTts() {
 
 		alert("TTS INIT "+result);
     if (result == TTS.STARTED) {
-        window.tts.speak("The text to speech service is ready. This example works!",function () { alert("TTS DONE"},onFail);
+        window.tts.speak("The text to speech service is ready. This example works!",function () { alert("TTS DONE");},onFail);
     }
 	}
 	alert("TTS");
