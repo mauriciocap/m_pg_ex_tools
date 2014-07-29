@@ -63,6 +63,11 @@
 		$('#btnFile').on('click', function () { try { getFile(urlGet(),jsSet); } catch(e) { alert("ERR:"+e) }; return false; });
 
 		$('#btnEval').on('click', function () { try { var js= $('#inJs').val(); alert("EVAL '"+js+"'"); eval(js); } catch(e) { alert("ERR:"+e) }; return false; });
+
+		$('#btnEx').on('click', function () {
+			$('inUrl').val("https://raw.githubusercontent.com/mauriciocap/m_pg_ex_tools/master/examples.js");
+			return false;
+		});
 	 }
 
 	 document.addEventListener("deviceready", appReady, false);
@@ -75,6 +80,7 @@
 		 <input id="btnGet" type="button" value="Get">
   	 <input id="btnFile" type="button" value="File"> 
 		 <input id="btnEval" type="button" value="Eval"></br>
+		 <input id="btnEx" type="button" value="ExUrl"></br>
      <textarea id="inJs" cols=80 rows=25>
      </textarea>
 </div>
