@@ -49,10 +49,9 @@ function tTts() {
 	var onStarted= function (result) {
     // When result is equal to STARTED we are ready to play
 
-		alert("TTS INIT "+result);
-    if (result == TTS.STARTED) {
+		alert("TTS INIT "+result+" vs "+TTS.STARTED);
+				alert("TTS SPEAK");
         window.tts.speak("The text to speech service is ready. This example works!",function () { alert("TTS DONE");},onFail);
-    }
 	}
 	alert("TTS");
 	window.tts.startup(onStarted, onFail);
