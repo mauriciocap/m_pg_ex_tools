@@ -16,7 +16,7 @@ function tFileOpener() {
 
 function tNavigate() {
 	//FROM: https://github.com/interFace-dk/phonegap-googlenavigate/blob/375ee51f3897e455fd7ae9a842567681da5e56bf/README.md
-	navigator.google_navigate.navigate("Some Road 1, 1234, Some City", function() {
+	navigator.google_navigate.navigate("mendoza 5323, buenos aires, argentina", function() {
     alert('Success');
 }, function(errMsg) {
     alert("Failed: " + errMsg);
@@ -42,4 +42,16 @@ function tMail() {
 	attachments=[]; //array of file names
 	xattachmentsData=[]; // array of [filename, base64data]
   window.plugins.emailComposer.showEmailComposerWithCallback(function (r) { alert("RESULT: "+r); },"Test Msg from phonegap","This is the body of my text message",["m1@mauriciocap.com.ar","m2@mauriciocap.com.ar"],["m3@mauriciocap.com.ar"],["m4@mauriciocap.com.ar"],false,attachments,xattachmentsData);
+}
+
+function tTts() {
+	//FROM: https://github.com/macdonst/TTS/blob/master/2.2.0/docs/TTS.md
+	var onStarted= function (result) {
+    // When result is equal to STARTED we are ready to play
+    if (result == TTS.STARTED) {
+        window.plugins.tts.speak("The text to speech service is ready. This example works!");
+    }
+	}
+
+	window.plugins.tts.startup(onStarted, onFail);
 }

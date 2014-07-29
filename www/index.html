@@ -66,7 +66,9 @@
 		$('#btnGet').on('click', function () { try { getHttp(pathGet(),jsSet);} catch(e) { alert("ERR:"+e) }; return false; });
 		$('#btnFile').on('click', function () { try { getFile(pathGet(),jsSet); } catch(e) { alert("ERR:"+e) }; return false; });
 
-		$('#btnEval').on('click', function () { try { var js= $('#inJs').val(); alert("EVAL '"+js+"'"); eval(js); } catch(e) { alert("ERR:"+e) }; return false; });
+		$('#btnEval').on('click', function () { try { var js= $('#inJs').val(); alert("EVAL '"+js+"'"); window.eval(js); } catch(e) { alert("ERR:"+e) }; return false; });
+
+		$('#btnClear').on('click', function () { jsSet(""); return false; });
 
 		$('#btnEx').on('click', function () { pathSetDflt();	return false; });
 		pathSetDflt();
