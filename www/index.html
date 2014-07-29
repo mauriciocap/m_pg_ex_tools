@@ -32,10 +32,10 @@
 
 		var onGotFileEntry= function (fileEntry) { fileEntry.file(onGotFile,onFail); }
 
-		var onGotFs: function (fileSystem) {
+		var onGotFs= function (fileSystem) {
 			fileSystem.root.getFile(path, {create: false}, onGotFileEntry, onFail);
 		}
-		alert("GETTING FILE '"+url+"'");
+		alert("GETTING FILE '"+path+"'");
 		window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onGotFs, onFail);
 	} 
     
@@ -54,20 +54,22 @@
 	function jsSet(txt) { $('#inJs').val(txt); }
 	function pathGet() { return $('#inUrl').val(); }
 
+	function pathSetDflt() {
+		$('#inUrl').val("https://raw.githubusercontent.com/mauriciocap/m_pg_ex_tools/master/examples.js");
+	}
+
  	var Initialized= false;
  	function appReady() {
 		if (Initialized) { return true; }
 		Initialized= true;
 
-		$('#btnGet').on('click', function () { try { getHttp(urlGet(),jsSet);} catch(e) { alert("ERR:"+e) }; return false; });
-		$('#btnFile').on('click', function () { try { getFile(urlGet(),jsSet); } catch(e) { alert("ERR:"+e) }; return false; });
+		$('#btnGet').on('click', function () { try { getHttp(pathGet(),jsSet);} catch(e) { alert("ERR:"+e) }; return false; });
+		$('#btnFile').on('click', function () { try { getFile(pathGet(),jsSet); } catch(e) { alert("ERR:"+e) }; return false; });
 
 		$('#btnEval').on('click', function () { try { var js= $('#inJs').val(); alert("EVAL '"+js+"'"); eval(js); } catch(e) { alert("ERR:"+e) }; return false; });
 
-		$('#btnEx').on('click', function () {
-			$('inUrl').val("https://raw.githubusercontent.com/mauriciocap/m_pg_ex_tools/master/examples.js");
-			return false;
-		});
+		$('#btnEx').on('click', function () { pathSetDflt();	return false; });
+		pathSetDflt();
 	 }
 
 	 document.addEventListener("deviceready", appReady, false);
