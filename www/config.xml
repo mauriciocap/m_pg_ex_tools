@@ -68,6 +68,7 @@
 		<gap:plugin name="dk.interface.cordova.plugin.googlenavigate" version="0.1.2" />
 		<gap:plugin name="com.jcjee.plugins.emailcomposer" version="1.4.6" />
 		<gap:plugin name="io.github.pwlin.cordova.plugins.fileopener2" version="1.0.8" />
+		<gap:plugin name="org.tt.plugin.tts" version="1" />
 
     <!-- Define app icon for each platform. -->
     <icon src="icon.png" />
