@@ -48,10 +48,15 @@ function tTts() {
 	//FROM: https://github.com/macdonst/TTS/blob/master/2.2.0/docs/TTS.md
 	var onStarted= function (result) {
     // When result is equal to STARTED we are ready to play
+
+		alert("TTS INIT "+result);
     if (result == TTS.STARTED) {
-        window.plugins.tts.speak("The text to speech service is ready. This example works!");
+        window.tts.speak("The text to speech service is ready. This example works!",function () { alert("TTS DONE"},onFail);
     }
 	}
-
-	window.plugins.tts.startup(onStarted, onFail);
+	alert("TTS");
+	window.tts.startup(onStarted, onFail);
 }
+
+$('#inJs').val("// tTts();\n// tNavigate();\n// tMail();\n// tScan();\n// tMail();\n");
+
