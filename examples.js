@@ -16,7 +16,7 @@ function tFileOpener(aPath) {
 
 function tNavigate(anAddr) {
 	//FROM: https://github.com/interFace-dk/phonegap-googlenavigate/blob/375ee51f3897e455fd7ae9a842567681da5e56bf/README.md
-	navigator.google_navigate.navigate(anAddr or "mendoza 5323, buenos aires, argentina", function() {
+	navigator.google_navigate.navigate(anAddr || "mendoza 5323, buenos aires, argentina", function() {
     alert('Success');
 }, function(errMsg) {
     alert("Failed: " + errMsg);
@@ -51,14 +51,14 @@ function tTts(aMsg) {
 
 		alert("TTS INIT "+result);
 				alert("TTS SPEAK");
-        window.tts.speak(aMsg or "The text to speech service is ready. This example works!",function () { alert("TTS DONE");},onFail);
+        window.tts.speak(aMsg || "The text to speech service is ready. This example works!",function () { alert("TTS DONE");},onFail);
 	}
 	alert("TTS");
 	window.tts.startup(onStarted, onFail);
 }
 
 function extFix() {
-  Ext.Component.prototype.animateFn = // or Ext.override( Ext.Component, { animateFn:
+  Ext.Component.prototype.animateFn = 
     function (animation, component, newState, oldState, options, controller) {
         var me = this;
         if (animation && (!newState || (newState && this.isPainted()))) {
@@ -120,7 +120,6 @@ Ext.application({
 
 }
 
-}
 extFix();
 $('#inJs').val("// tTts();\n// tNavigate();\n// tMail();\n// tScan();\n// tMail();\n// tExt();");
 
