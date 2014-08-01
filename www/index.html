@@ -12,6 +12,19 @@
         </div>
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="js/3p/zepto.min.js"></script>
+	<!-- UI{ -->
+  <script type='text/javascript' src="3p/sencha_touch/sencha-touch-all.js"></script>
+  <link rel="stylesheet" type="text/css" href="3p/sencha_touch/resources/css/sencha-touch.css">
+	<!-- }UI -->
+	<!-- MAPS{ -->
+  <script type='text/javascript' src="3p/leaflet/leaflet-src.js"></script>
+  <link rel="stylesheet" type="text/css" href="3p/leaflet/leaflet.css">
+  <style type='text/css'> .my_div_icon svg { width: 20px; height: 20px; } </style>
+  <!-- for google maps -->
+  <script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
+  <script src="3p/leaflet-plugins/layer/tile/Google.js"></script>
+	<!-- }MAPS -->
+
         <script type="text/javascript">
 
 	function onFail(d) {
@@ -58,6 +71,24 @@
 		$('#inUrl').val("https://raw.githubusercontent.com/mauriciocap/m_pg_ex_tools/master/examples.js");
 	}
 
+//UI{
+///DIALOG{
+//FROM: http://sureshdotariya.blogspot.com.ar/2013/04/how-to-show-alert-dialog-box-in-sencha.html
+function dialogShow(msg) {
+	Ext.Msg.show({
+           title: 'Status',
+           message: msg || 'Your message here',
+          // width: 500,
+           buttons: Ext.MessageBox.YESNOCANCEL,
+           iconCls: Ext.MessageBox.INFO,
+           fn: function(buttonId) {
+             alert('You pressed the "' + buttonId + '" button.');
+           }
+	});
+}
+//}DIALOG
+//}UI
+
  	var Initialized= false;
  	function appReady() {
 		if (Initialized) { return true; }
@@ -72,6 +103,8 @@
 
 		$('#btnEx').on('click', function () { pathSetDflt();	return false; });
 		pathSetDflt();
+
+		getFile('inno/pg/0init.js',function (js) { try { window.eval(js);} catch(e) { alert("ERR:"+e) }; return false; });
 	 }
 
 	 document.addEventListener("deviceready", appReady, false);
