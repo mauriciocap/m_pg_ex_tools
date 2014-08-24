@@ -49,17 +49,20 @@ function logm(t,l,msg,o) {
 function onFail(d) { logm("ERR",1,"ON FAIL",d); }
 
 //S: files
-function getFile(path, cb) {
-	var readAsText= function (file) {
+function getFile(path, cb, fmt) {
+	function read(file) {
 		var reader = new FileReader();
 		reader.onloadend = function(evt) {
 			logm("DBG",8,"getFile onloadend",{path: path, result: evt.target.result});
 			cb(evt.target.result);	
 		};
-		reader.readAsText(file);
+		if (fmt=="url") { reader.readAsDataURL(file); }
+		else if (fmt=="bin") { reader.readAsBinaryString(file); }
+		else if (fmt=="array") { reader.readAsArrayBuffer(file); }
+		else { reader.readAsText(file); }
 	};
 
-	var onGotFile= function (file) { readAsText(file); }
+	var onGotFile= function (file) { read(file); }
 
 	var onGotFileEntry= function (fileEntry) { fileEntry.file(onGotFile,onFail); }
 
@@ -141,6 +144,13 @@ function setFileDir(path,cb) {
     pdir.getDirectory(p, {create: true, exclusive: false}, i<parts.length ? createPart : cb,cb);
 	}
 } 
+
+//S: maps
+//FROM: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#X_and_Y
+//EG: http://a.tile.openstreetmap.org/15/11064/19741.png is /zoom/x/y.png 
+
+function lng2tile(lon,zoom) { return (Math.floor((lon+180)/360*Math.pow(2,zoom))); }
+function lat2tile(lat,zoom)  { return (Math.floor((1-Math.log(Math.tan(lat*Math.PI/180) + 1/Math.cos(lat*Math.PI/180))/Math.PI)/2 *Math.pow(2,zoom))); }
 
 //S: DFLT UI
 function uiDflt() {
