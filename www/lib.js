@@ -30,6 +30,13 @@ function evalm(src,failSilently) {
 	return r;
 }
 
+function strToBin(d) {
+  var dataBuf = new ArrayBuffer(d.length);
+  var dataView = new Int8Array(dataBuf);
+  for (var i=0; i < d.length; i++) { dataView[i] = d.charCodeAt(i) & 0xff; }
+	return dataBuf;
+}
+
 //S: log
 CFGLIB.loglvlmax=9;
 function logm(t,l,msg,o) {
@@ -67,8 +74,11 @@ function getFile(path, cb) {
 function getHttp(url,reqdata,cb) {
 	logm("DBG",8,"getHttp",{url: url, req: reqdata});
 	$.ajax({ url: url, data: reqdata,
+		beforeSend: function (jqXHR, settings) { //A: for binary downloads
+      jqXHR.overrideMimeType('text/plain; charset=x-user-defined');
+    },
 		success: function(resdata){
-			logm("DBG",8,"getHttp",{url: url, req: reqdata, res: resdata});
+			logm("DBG",8,"getHttp",{url: url, len: reqdata.length, req: reqdata, res: resdata});
 			cb(resdata);
 		},
 		error: onFail
@@ -86,6 +96,34 @@ function keysFile(dirPath,cb) {
 		} catch (ex) { logm("ERR",7,"keysFile gotfs",[dirPath,ex.message]); }
 	}
 }
+
+function setFile(path,data,cb) {
+  window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, onFail);
+
+  function gotFS(fileSystem) {
+		logm("DBG",9,"setFile gotfs",[path]); try {
+	    fileSystem.root.getFile(path, {create: true, exclusive: false}, gotFileEntry, onFail);
+		} catch (ex) { logm("ERR",7,"setFile gotfs",[path,ex.message]); }
+	}
+
+  function gotFileEntry(fileEntry) {
+		logm("DBG",9,"setFile gotentry",[path]); try {
+	    fileEntry.createWriter(gotFileWriter, onFail);
+		} catch (ex) { logm("ERR",7,"setFile gotentry",[path,ex.message]); }
+  }
+
+  function gotFileWriter(writer) {
+		logm("DBG",9,"setFile write",[path]); try {
+			writer.onwriteend = function(evt) {
+					writer.onwriteend = cb;
+					writer.write(data);
+			};
+			writer.truncate(0);  
+		} catch (ex) { logm("ERR",7,"setFile write",[path,ex.message]); }
+  }
+}
+
+function setFileBin(path,data,cb) { setFile(path,strToBin(data),cb); }
 
 //S: DFLT UI
 function uiDflt() {
