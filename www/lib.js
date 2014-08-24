@@ -125,6 +125,23 @@ function setFile(path,data,cb) {
 
 function setFileBin(path,data,cb) { setFile(path,strToBin(data),cb); }
 
+function setFileDir(path,cb) {
+	var parts= path.split("/");
+	var i= 0;
+
+	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onRequestFileSystemSuccess, onFail); 
+
+	function onRequestFileSystemSuccess(fileSystem) { 
+		if (parts.length==0) { cb(fileSystem.root); }
+		else {	createPart(fileSystem.root) }
+	}
+
+	function createPart(pdir) {
+		var p= parts[i]; i++;
+    pdir.getDirectory(p, {create: true, exclusive: false}, i<parts.length ? createPart : cb,cb);
+	}
+} 
+
 //S: DFLT UI
 function uiDflt() {
 	$(document.body).html('UI Dflt<div id="load"> <input id="inUrl" size=80></br> <input id="btnGet" type="button" value="Get"> <input id="btnFile" type="button" value="File"> <input id="btnEval" type="button" value="Eval"></br> <input id="btnEx" type="button" value="ExUrl"><input id="btnExit" type="button" value="Exit"></br> <input id="btnClear" type="button" value="Clear"></br> <textarea id="inJs" cols=80 rows=25> </textarea> </div>');
