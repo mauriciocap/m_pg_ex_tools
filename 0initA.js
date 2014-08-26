@@ -43,6 +43,7 @@ L.TileLayer.MobileSdTiles = L.TileLayer.extend({
 	}
 });
 
+if (0) {
 getHttp('http://192.168.10.8:8080/www/app.js',{},function (d) {
 	setFile(CFGLIB.pathToLib+"app.js",d,nullf);
 	CFGLIB.loglvlmax= 3;
@@ -54,3 +55,7 @@ getHttp('http://192.168.10.8:8080/www/app.js',{},function (d) {
 	evalFile("app.js");
 });
 CFGLIB.noUiDflt= true;
+
+}
+alert("hola");
+uiDflt();
