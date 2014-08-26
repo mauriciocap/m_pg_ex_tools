@@ -222,8 +222,7 @@ function evalFileOrDflt(name,failSilently,cbok,cbfail) {
 
 function getHttpToDflt(fname,url,cbok,cbfail) {
 	getHttp(url,{},function (d) {
-		setFile(CFGLIB.pathToLib+CFGLIB.pathDfltInLib+fname,d,nullf);
-		cbok(d);
+		setFile(CFGLIB.pathToLib+CFGLIB.pathDfltInLib+fname,d,cbok,cbok);
 	},cbfail);
 }
 
