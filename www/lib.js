@@ -47,14 +47,16 @@ function logm(t,l,msg,o) {
 
 //S: defaults
 function onFail(d) { logm("ERR",1,"ON FAIL",d); }
+function nullf() {}
 
 //S: files
-function getFile(path, cb, fmt) {
+function getFile(path,fmt,cbok,cbfail) {
+	cbfail=cbfail ||onFail;
 	function read(file) {
 		var reader = new FileReader();
 		reader.onloadend = function(evt) {
 			logm("DBG",8,"getFile onloadend",{path: path, result: evt.target.result});
-			cb(evt.target.result);	
+			cbok(evt.target.result);	
 		};
 		if (fmt=="url") { reader.readAsDataURL(file); }
 		else if (fmt=="bin") { reader.readAsBinaryString(file); }
@@ -64,27 +66,29 @@ function getFile(path, cb, fmt) {
 
 	var onGotFile= function (file) { read(file); }
 
-	var onGotFileEntry= function (fileEntry) { fileEntry.file(onGotFile,onFail); }
+	var onGotFileEntry= function (fileEntry) { fileEntry.file(onGotFile,cbfail); }
 
 	var onGotFs= function (fileSystem) {
-		fileSystem.root.getFile(path, {create: false}, onGotFileEntry, onFail);
+		fileSystem.root.getFile(path, {create: false}, onGotFileEntry, cbfail);
 	}
 
 	logm("DBG",8,"getFile",{path: path});
-	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onGotFs, onFail);
+	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onGotFs, cbfail);
 } 
 
-function getHttp(url,reqdata,cb) {
+function getHttp(url,reqdata,cbok,cbfail) {
+	cbfail=cbfail || onFail;
 	logm("DBG",8,"getHttp",{url: url, req: reqdata});
 	$.ajax({ url: url, data: reqdata,
+		dataType: 'text', //A: don't eval or process data
 		beforeSend: function (jqXHR, settings) { //A: for binary downloads
       jqXHR.overrideMimeType('text/plain; charset=x-user-defined');
     },
 		success: function(resdata){
 			logm("DBG",8,"getHttp",{url: url, len: reqdata.length, req: reqdata, res: resdata});
-			cb(resdata);
+			cbok(resdata);
 		},
-		error: onFail
+		error: cbfail
 	});
 }
 
@@ -100,25 +104,27 @@ function keysFile(dirPath,cb) {
 	}
 }
 
-function setFile(path,data,cb) {
+function setFile(path,data,cbok,cbfail) {
+	cbfail=cbfail || onFail;
+
   window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, onFail);
 
   function gotFS(fileSystem) {
 		logm("DBG",9,"setFile gotfs",[path]); try {
-	    fileSystem.root.getFile(path, {create: true, exclusive: false}, gotFileEntry, onFail);
+	    fileSystem.root.getFile(path, {create: true, exclusive: false}, gotFileEntry, cbfail);
 		} catch (ex) { logm("ERR",7,"setFile gotfs",[path,ex.message]); }
 	}
 
   function gotFileEntry(fileEntry) {
 		logm("DBG",9,"setFile gotentry",[path]); try {
-	    fileEntry.createWriter(gotFileWriter, onFail);
+	    fileEntry.createWriter(gotFileWriter, cbfail);
 		} catch (ex) { logm("ERR",7,"setFile gotentry",[path,ex.message]); }
   }
 
   function gotFileWriter(writer) {
 		logm("DBG",9,"setFile write",[path]); try {
 			writer.onwriteend = function(evt) {
-					writer.onwriteend = cb;
+					writer.onwriteend = cbok;
 					writer.write(data);
 			};
 			writer.truncate(0);  
@@ -126,37 +132,37 @@ function setFile(path,data,cb) {
   }
 }
 
-function setFileBin(path,data,cb) { setFile(path,strToBin(data),cb); }
+function setFileBin(path,data,cbok,cbfail) { setFile(path,strToBin(data),cbok,cbfail); }
 
-function setFileDir(path,cb) {
+function setFileDir(path,cbok,cbfail) {
+	cbfail=cbfail ||onFail;
 	var parts= path.split("/");
 	var i= 0;
 
-	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onRequestFileSystemSuccess, onFail); 
+	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onRequestFileSystemSuccess, cbfail); 
 
 	function onRequestFileSystemSuccess(fileSystem) { 
-		if (parts.length==0) { cb(fileSystem.root); }
+		if (parts.length==0) { cbok(fileSystem.root); }
 		else {	createPart(fileSystem.root) }
 	}
 
 	function createPart(pdir) {
 		var p= parts[i]; i++;
-    pdir.getDirectory(p, {create: true, exclusive: false}, i<parts.length ? createPart : cb,cb);
+    pdir.getDirectory(p, {create: true, exclusive: false}, i<parts.length ? createPart : cbok,cbfail);
 	}
 } 
 
 //S: maps
 //FROM: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#X_and_Y
 //EG: http://a.tile.openstreetmap.org/15/11064/19741.png is /zoom/x/y.png 
-
-function lng2tile(lon,zoom) { return (Math.floor((lon+180)/360*Math.pow(2,zoom))); }
-function lat2tile(lat,zoom)  { return (Math.floor((1-Math.log(Math.tan(lat*Math.PI/180) + 1/Math.cos(lat*Math.PI/180))/Math.PI)/2 *Math.pow(2,zoom))); }
+function mapLngToTile(lon,zoom) { return (Math.floor((lon+180)/360*Math.pow(2,zoom))); }
+function mapLatToTile(lat,zoom)  { return (Math.floor((1-Math.log(Math.tan(lat*Math.PI/180) + 1/Math.cos(lat*Math.PI/180))/Math.PI)/2 *Math.pow(2,zoom))); }
 
 //S: DFLT UI
 function uiDflt() {
 	$(document.body).html('UI Dflt<div id="load"> <input id="inUrl" size=80></br> <input id="btnGet" type="button" value="Get"> <input id="btnFile" type="button" value="File"> <input id="btnEval" type="button" value="Eval"></br> <input id="btnEx" type="button" value="ExUrl"><input id="btnExit" type="button" value="Exit"></br> <input id="btnClear" type="button" value="Clear"></br> <textarea id="inJs" cols=80 rows=25> </textarea> </div>');
-	$('#btnGet').on('click', function () { try { getHttp(pathGet(),jsSet);} catch(e) { alert("ERR:"+e) }; return false; });
-	$('#btnFile').on('click', function () { try { getFile(pathGet(),jsSet); } catch(e) { alert("ERR:"+e) }; return false; });
+	$('#btnGet').on('click', function () { try { getHttp(pathGet(),{},jsSet);} catch(e) { alert("ERR:"+e) }; return false; });
+	$('#btnFile').on('click', function () { try { getFile(pathGet(),"txt",jsSet); } catch(e) { alert("ERR:"+e) }; return false; });
 
 	$('#btnEval').on('click', function () { try { var js= $('#inJs').val(); alert("EVAL '"+js+"'"); window.eval(js); } catch(e) { alert("ERR:"+e) }; return false; });
 
@@ -192,18 +198,17 @@ CFGLIB.pathToLib="inno/pg/";
 CFGLIB.initFile0="0init.js";
 CFGLIB.initFile1="0initA.js";
 
-function evalFile(name,failSilently,cb) { 
-	getFile(CFGLIB.pathToLib+name,function (src) { evalm(src,failSilently); cb(); }); 
+function evalFile(name,failSilently,cbok,cbfail) { 
+	getFile(CFGLIB.pathToLib+name,"txt",function (src) { var r= evalm(src,failSilently); cb(r); },cbfail);
 }
 
 ensureInit("LibAppStarted",false,this);
 function appInit() {
 	if (LibAppStarted) { return true; } LibAppStarted= true;
-	evalFile(CFGLIB.initFile0,false,function () {
-		evalFile(CFGLIB.initFile1,true, function () {
-			if (!CFGLIB.noUiDflt) { uiDflt(); }
-		})
-	})
+	var s0= function () { evalFile(CFGLIB.initFile0,false,s1,s1); }
+	var s1= function () { evalFile(CFGLIB.initFile1,true,s2,s2); }
+	var s2= function () { if (!CFGLIB.noUiDflt) { uiDflt(); } }
+	s0();	
 }
 
 document.addEventListener("deviceready", appInit, false);
