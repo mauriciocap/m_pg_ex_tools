@@ -237,6 +237,10 @@ function evalUpdated(name,cbok,cbfail) {
 function rtInitImpl() {
 	var s0= function () { setFileDir(CFGLIB.pathToLib+CFGLIB.pathDfltInLib,s10); }
 	var s10= function () { evalUpdated(CFGLIB.initFile0,s11,s11); }
+	//A: fue a la web a buscar "0init.js", si pudo lo guardo en 'inno/pg/dflt/0init.js'
+	//A: si existe 'inno/pg/0init.js' (porque vos lo creaste y editaste) ejecuta ese, sino el de dflt
+	//A: entonces, podes trabajar en tu compu y actualizar en github y se te actualizan solos los telfonos
+	//A: Y TAMBIEN, si estas probando algo en el telefono, modificar localmente
 	var s11= function () { evalUpdated(CFGLIB.initFile1,s12,s12); }
 	var s12= function () { if (!CFGLIB.noUiDflt) { uiDflt(); } }
 	s0();
