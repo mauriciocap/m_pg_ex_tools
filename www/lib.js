@@ -76,6 +76,16 @@ function getFile(path,fmt,cbok,cbfail) {
 	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onGotFs, cbfail);
 } 
 
+function getFileMeta(path,cbok,cbfail) {
+	cbfail=cbfail ||onFail;
+	var onGotFileEntry= function (fileEntry) { fileEntry.getMetadata(cbok,cbfail); }
+	var onGotFs= function (fileSystem) {
+		fileSystem.root.getFile(path, {create: false}, onGotFileEntry, cbfail);
+	}
+	logm("DBG",8,"getFile",{path: path});
+	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onGotFs, cbfail);
+}
+
 function getHttp(url,reqdata,cbok,cbfail) {
 	cbfail=cbfail || onFail;
 	logm("DBG",8,"getHttp",{url: url, req: reqdata});
@@ -195,20 +205,47 @@ function dialogShow(msg) {
 //}DIALOG
 //}UI
 CFGLIB.pathToLib="inno/pg/";
+CFGLIB.pathDfltInLib="dflt/";
 CFGLIB.initFile0="0init.js";
 CFGLIB.initFile1="0initA.js";
+CFGLIB.cfgurl="https://raw.githubusercontent.com/mauriciocap/m_pg_ex_tools/master/";
 
 function evalFile(name,failSilently,cbok,cbfail) { 
 	getFile(CFGLIB.pathToLib+name,"txt",function (src) { var r= evalm(src,failSilently); cb(r); },cbfail);
 }
 
-ensureInit("LibAppStarted",false,this);
-function appInit() {
-	if (LibAppStarted) { return true; } LibAppStarted= true;
-	var s0= function () { evalFile(CFGLIB.initFile0,false,s1,s1); }
-	var s1= function () { evalFile(CFGLIB.initFile1,true,s2,s2); }
-	var s2= function () { if (!CFGLIB.noUiDflt) { uiDflt(); } }
-	s0();	
+function evalFileOrDflt(name,failSilently,cbok,cbfail) {
+	var s0= function () { evalFile(name,failSilently,cbok,s1f); }
+	var s1f= function () { evalFile(CFGLIB.pathDfltInLib+name,failSilently,cbok,cbfail); }
+	s0();
 }
 
-document.addEventListener("deviceready", appInit, false);
+function getHttpToDflt(fname,url,cbok,cbfail) {
+	getHttp(url,{},function (d) {
+		setFile(CFGLIB.pathToLib+CFGLIB.pathDfltInLib+fname,d,nullf);
+		cbok(d);
+	},cbfail);
+}
+
+function evalUpdated(name,cbok,cbfail) {
+	var s0= function () { getHttpToDflt(name,CFGLIB.cfgurl+name,s1,s1); }
+	var s1= function () { evalFileOrDflt(name,false,cbok,cbfail); }
+	s0();
+}
+
+//S: init
+function rtInitImpl() {
+	var s0= function () { setFileDir(CFGLIB.pathToLib+CFGLIB.pathDfltInLib,s10); }
+	var s10= function () { evalUpdated(CFGLIB.initFile0,s11,s11); }
+	var s11= function () { evalUpdated(CFGLIB.initFile1,s12,s12); }
+	var s12= function () { if (!CFGLIB.noUiDflt) { uiDflt(); } }
+	s0();
+}
+
+ensureInit("LibAppStarted",false,this);
+function rtInit() {
+	if (LibAppStarted) { return true; } LibAppStarted= true;
+	evalFile(CFGLIB.initFile0,true,nullf,rtInitImpl);	
+}
+
+document.addEventListener("deviceready", rtInit, false);
