@@ -90,6 +90,7 @@ function getHttp(url,reqdata,cbok,cbfail) {
 	cbfail=cbfail || onFail;
 	logm("DBG",8,"getHttp",{url: url, req: reqdata});
 	$.ajax({ url: url, data: reqdata,
+		cache: false,
 		dataType: 'text', //A: don't eval or process data
 		beforeSend: function (jqXHR, settings) { //A: for binary downloads
       jqXHR.overrideMimeType('text/plain; charset=x-user-defined');
@@ -269,10 +270,24 @@ function rtInitImpl() {
 	s0();
 }
 
+CFGLIB.appUrl= 'http://192.168.10.8:8080/www/app.js';
+function runApp() {
+	var s0= function () { getHttpToDflt('app.js',CFGLIB.appUrl,s1,s1); }
+	var s1= function () { evalFileOrDflt('app.js',false,nullf); }
+	s0();
+}
+
+function initScreen() {
+	$(document.body).html('<center style="font-size: 200%; height: 2048px; width: '+window.innerWidth+'; background: #087;"><h1>FastApp</h1><br><big><p><button id="btnRun">GO</button><br></big><p><button id="btnRunDbg">dbg</button><p><input id="appUrl" value="http://192.168.10.8:8080/www/app.js" style="width: 100%;"></center>');
+	$('#btnRun').on('click',function () { CFGLIB.loglvlmax=0; CFGLIB.appUrl=$('#appUrl').val(); rtInitImpl(); });
+	$('#btnRunDbg').on('click',function () { CFGLIB.loglvlmax=9; CFGLIB.appUrl=$('#appUrl').val(); rtInitImpl(); });
+}
+
+
 ensureInit("LibAppStarted",false,this);
 function rtInit() {
 	if (LibAppStarted) { return true; } LibAppStarted= true;
-	evalFile(CFGLIB.initFile0,true,nullf,rtInitImpl);	
+	CFGLIB.loglvlmax=0;	
+	evalFile(CFGLIB.initFile0,true,nullf,initScreen);	
 }
-
 document.addEventListener("deviceready", rtInit, false);
