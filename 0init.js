@@ -22,16 +22,17 @@ function getHttpToDflt(fname,url,cbok,cbfail) {
 	},cbfail);
 }
 
+CFGLIB.appUrl= 'http://192.168.10.8:8080/www/app.js';
 function runApp() {
-	var s0= function () { getHttpToDflt('app.js','http://192.168.10.8:8080/www/app.js',s1,s1); }
+	var s0= function () { getHttpToDflt('app.js',CFGLIB.appUrl,s1,s1); }
 	var s1= function () { evalFileOrDflt('app.js',false,nullf); }
 	s0();
 }
 
 function initScreen() {
-	$(document.body).html('<center><h1>FastApp</h1><br><big><p><button id="btnRun">GO</button></big><p><button id="btnRunDbg">dbg</button></center>');
-	$('#btnRun').on('click',function () { CFGLIB.loglvlmax=0; runApp(); });
-	$('#btnRunDbg').on('click',function () { CFGLIB.loglvlmax=9; runApp(); });
+	$(document.body).html('<center style="font-size: 200%; height: '+window.innerHeight+'; width: '+window.innerWidth+'; background: #087;"><h1>FastApp</h1><br><big><p><button id="btnRun">GO</button></big><p><button id="btnRunDbg">dbg</button><input id="appUrl" value="http://192.168.10.8:8080/www/app.js" style="width: 100%;"></center>');
+	$('#btnRun').on('click',function () { CFGLIB.loglvlmax=0; CFGLIB.appUrl=$('#appUrl').val(); runApp(); });
+	$('#btnRunDbg').on('click',function () { CFGLIB.loglvlmax=9; CFGLIB.appUrl=$('#appUrl').val(); runApp(); });
 }
 
 initScreen();
