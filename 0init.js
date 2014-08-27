@@ -22,6 +22,24 @@ function getHttpToDflt(fname,url,cbok,cbfail) {
 	},cbfail);
 }
 
+function getHttp(url,reqdata,cbok,cbfail) {
+  cbfail=cbfail || onFail;
+  logm("DBG",8,"getHttp",{url: url, req: reqdata});
+  $.ajax({ url: url, data: reqdata,
+    cache: false,
+    dataType: 'text', //A: don't eval or process data
+    beforeSend: function (jqXHR, settings) { //A: for binary downloads
+      jqXHR.overrideMimeType('text/plain; charset=x-user-defined');
+    },
+    success: function(resdata){
+      logm("DBG",8,"getHttp",{url: url, len: reqdata.length, req: reqdata, res: resdata});
+      cbok(resdata);
+    },
+    error: cbfail
+  });
+}
+
+
 CFGLIB.appUrl= 'http://192.168.10.8:8080/www/app.js';
 function runApp() {
 	var s0= function () { getHttpToDflt('app.js',CFGLIB.appUrl,s1,s1); }
