@@ -29,7 +29,7 @@ function runApp() {
 }
 
 function initScreen() {
-	$(document.body).html('<p><button id="btnRun" value="RUN"><p><button id="btnRunDbg" value="DBG">');
+	$(document.body).html('<center><h1>FastApp</h1><br><big><p><button id="btnRun">GO</button></big><p><button id="btnRunDbg">dbg</button></center>');
 	$('#btnRun').on('click',function () { CFGLIB.loglvlmax=0; runApp(); });
 	$('#btnRunDbg').on('click',function () { CFGLIB.loglvlmax=9; runApp(); });
 }
