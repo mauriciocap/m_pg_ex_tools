@@ -30,8 +30,8 @@ function runApp() {
 
 function initScreen() {
 	$(document.body).html('<p><button id="btnRun" value="RUN"><p><button id="btnRunDbg" value="DBG">');
-	$('#btnRun').on('click',function () { CFGLIB.loglvlmax=0; runApp(); }
-	$('#btnRunDbg').on('click',function () { CFGLIB.loglvlmax=9; runApp(); }
+	$('#btnRun').on('click',function () { CFGLIB.loglvlmax=0; runApp(); });
+	$('#btnRunDbg').on('click',function () { CFGLIB.loglvlmax=9; runApp(); });
 }
 
 initScreen();
