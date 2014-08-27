@@ -1,1 +1,2 @@
+CFGLIB.pathToTiles="xtiles/";
 runApp();

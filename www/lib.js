@@ -230,7 +230,7 @@ function dialogShow(msg) {
 //}UI
 CFGLIB.pathToLib="inno/pg/";
 CFGLIB.pathDfltInLib="dflt/";
-CFGLIB.pathToTiles="xtiles";
+CFGLIB.pathToTiles="xtiles/";
 CFGLIB.initFile0="0init.js";
 CFGLIB.initFile1="0initA.js";
 CFGLIB.cfgurl="https://raw.githubusercontent.com/mauriciocap/m_pg_ex_tools/master/";
@@ -283,7 +283,7 @@ function initScreen() {
 	$('#btnRunDbg').on('click',function () { CFGLIB.loglvlmax=9; s2(); });
 	var s2= function () { 
 		CFGLIB.appUrl=$('#appUrl').val(); 
-		$(document.body).html('<center style="font-size: 200%; height: 2048px; width: '+window.innerWidth+'; background: #000;"><img src="img/loading.gif"></center>');
+		$(document.body).html('<center style="font-size: 200%; margin-top: 50px; height: 2048px; width: '+window.innerWidth+'; background: #000;"><img src="img/loading.gif"></center>');
 		rtInitImpl();
 	}
 }
