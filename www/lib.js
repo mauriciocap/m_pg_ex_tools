@@ -278,9 +278,14 @@ function runApp() {
 }
 
 function initScreen() {
-	$(document.body).html('<center style="font-size: 200%; height: 2048px; width: '+window.innerWidth+'; background: #087;"><h1>FastApp</h1><br><big><p><button id="btnRun">GO</button><br></big><p><button id="btnRunDbg">dbg</button><p><input id="appUrl" value="http://192.168.10.8:8080/www/app.js" style="width: 100%;"></center>');
-	$('#btnRun').on('click',function () { CFGLIB.loglvlmax=0; CFGLIB.appUrl=$('#appUrl').val(); rtInitImpl(); });
-	$('#btnRunDbg').on('click',function () { CFGLIB.loglvlmax=9; CFGLIB.appUrl=$('#appUrl').val(); rtInitImpl(); });
+	$(document.body).html('<center style="font-size: 200%; height: 2048px; width: '+window.innerWidth+'; background: #087;"><h1>FastApp</h1><br><big><p><button id="btnRun">GO</button><br></big><p><button id="btnRunDbg">dbg</button><p><input id="appUrl" value="'+CFGLIB.appUrl+'" style="width: 100%;"></center>');
+	$('#btnRun').on('click',function () { CFGLIB.loglvlmax=0; s2(); });
+	$('#btnRunDbg').on('click',function () { CFGLIB.loglvlmax=9; s2(); });
+	var s2= function () { 
+		CFGLIB.appUrl=$('#appUrl').val(); 
+		$(document.body).html('<center style="font-size: 200%; height: 2048px; width: '+window.innerWidth+'; background: #000;"><img src="img/loading.gif"></center>');
+		rtInitImpl();
+	}
 }
 
 
