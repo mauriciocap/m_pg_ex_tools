@@ -30,7 +30,7 @@ function runApp() {
 }
 
 function initScreen() {
-	$(document.body).html('<center style="font-size: 200%; height: '+window.innerHeight+'; width: '+window.innerWidth+'; background: #087;"><h1>FastApp</h1><br><big><p><button id="btnRun">GO</button></big><p><button id="btnRunDbg">dbg</button><input id="appUrl" value="http://192.168.10.8:8080/www/app.js" style="width: 100%;"></center>');
+	$(document.body).html('<center style="font-size: 200%; height: 2048px; width: '+window.innerWidth+'; background: #087;"><h1>FastApp</h1><br><big><p><button id="btnRun">GO</button><br></big><p><button id="btnRunDbg">dbg</button><p><input id="appUrl" value="http://192.168.10.8:8080/www/app.js" style="width: 100%;"></center>');
 	$('#btnRun').on('click',function () { CFGLIB.loglvlmax=0; CFGLIB.appUrl=$('#appUrl').val(); runApp(); });
 	$('#btnRunDbg').on('click',function () { CFGLIB.loglvlmax=9; CFGLIB.appUrl=$('#appUrl').val(); runApp(); });
 }
