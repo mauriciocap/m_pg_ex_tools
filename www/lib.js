@@ -168,6 +168,29 @@ function setFileDir(path,cbok,cbfail) {
 function mapLngToTile(lon,zoom) { return (Math.floor((lon+180)/360*Math.pow(2,zoom))); }
 function mapLatToTile(lat,zoom)  { return (Math.floor((1-Math.log(Math.tan(lat*Math.PI/180) + 1/Math.cos(lat*Math.PI/180))/Math.PI)/2 *Math.pow(2,zoom))); }
 
+function mapPathToTile(z,x,y) {
+	return CFGLIB.pathToTiles+[z,x,y].join("/")+".png";
+}
+
+L.TileLayer.MobileSdTiles = L.TileLayer.extend({
+	initialize: function(url, options) {
+		L.Util.setOptions(this, options);
+	},
+	_loadTile: function (tile, tilePoint) {
+		//SEE: "3p/leaflet/leaflet-src.js" 2958
+		tile._layer = this;
+		tile.onload = this._tileOnLoad;
+		tile.onerror = this._tileOnError;
+
+		var z= this._map.getZoom();
+		var x= tilePoint.x;
+		var y= tilePoint.y;
+		var fname= mapPathToTile(z,x,y);
+		getFile(fname,"url",function (d) { tile.src= d },nullf); 
+	}
+});
+
+
 //S: DFLT UI
 function uiDflt() {
 	$(document.body).html('UI Dflt<div id="load"> <input id="inUrl" size=80></br> <input id="btnGet" type="button" value="Get"> <input id="btnFile" type="button" value="File"> <input id="btnEval" type="button" value="Eval"></br> <input id="btnEx" type="button" value="ExUrl"><input id="btnExit" type="button" value="Exit"></br> <input id="btnClear" type="button" value="Clear"></br> <textarea id="inJs" cols=80 rows=25> </textarea> </div>');
@@ -206,6 +229,7 @@ function dialogShow(msg) {
 //}UI
 CFGLIB.pathToLib="inno/pg/";
 CFGLIB.pathDfltInLib="dflt/";
+CFGLIB.pathToTiles="xtiles";
 CFGLIB.initFile0="0init.js";
 CFGLIB.initFile1="0initA.js";
 CFGLIB.cfgurl="https://raw.githubusercontent.com/mauriciocap/m_pg_ex_tools/master/";
