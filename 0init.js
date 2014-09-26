@@ -25,5 +25,5 @@ function tTiles() {
 	})(zoom)}
 }
 
-tTiles();
+//tTiles();
 runApp();
