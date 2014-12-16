@@ -81,7 +81,7 @@
 		<gap:plugin name="com.jcjee.plugins.emailcomposer" version="1.4.6" />
 		<gap:plugin name="io.github.pwlin.cordova.plugins.fileopener2" version="1.0.8" />
 		<gap:plugin name="org.tt.plugin.tts" version="1" />
-		<gap:plugin name="WebIntent" value="com.borismus.webintent.WebIntent" />
+<!--		<gap:plugin name="WebIntent" value="com.borismus.webintent.WebIntent" /> -->
 
     <!-- Define app icon for each platform. -->
     <icon src="icon.png" />
