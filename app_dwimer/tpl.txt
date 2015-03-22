@@ -1,0 +1,5 @@
+Esto es una prueba.
+Donde diga NOMBRE, va a poner $NOMBRE$.
+Y donde diga SALUDO, $SALUDO$.
+A cualquier otra cosa, contesta $ALGOINVENTADO$.
+Que tul?
