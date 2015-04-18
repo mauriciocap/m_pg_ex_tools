@@ -277,7 +277,7 @@ function runApp() {
 	s0();
 }
 
-function initScreen() {
+function initScreen() { //D: pantalla inicial ofreciendo Run, Run con debug (alerts) y bajarse la app
 	$(document.body).html('<center style="font-size: 200%; height: 2048px; width: '+window.innerWidth+'; background: #087;"><h1>FastApp</h1><br><big><p><button id="btnRun">GO</button><br></big><p><button id="btnRunDbg">dbg</button><p><input id="appUrl" value="'+CFGLIB.appUrl+'" style="width: 100%;"></center>');
 	$('#btnRun').on('click',function () { CFGLIB.loglvlmax=0; s2(); });
 	$('#btnRunDbg').on('click',function () { CFGLIB.loglvlmax=9; s2(); });
