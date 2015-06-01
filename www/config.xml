@@ -7,14 +7,14 @@
         id        = "com.phonegap.m_pg_ex_tools"
         version   = "1.0.0">
 
-    <name>Your fastapp name here (tools)</name>
+    <name>Enerminds Prometium Rt (desarrollo)</name>
 
     <description>
-       	Your fastapp description here (tools)
+       	Enerminds Prometium Rt (desarrollo)
     </description>
 
-    <author href="http://fastapp.com.ar" email="support@fastapp.com.ar">
-        fastapp Team
+    <author href="http://enerminds.com.ar" email="mauriciocap@enerminds.com.ar">
+       	Enerminds 
     </author>
 
 <!-- XXX:custom android manifest, try associating to url, intents, etc.
