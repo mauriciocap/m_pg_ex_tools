@@ -236,7 +236,7 @@ CFGLIB.initFile1="0initA.js";
 CFGLIB.cfgurl="https://raw.githubusercontent.com/mauriciocap/m_pg_ex_tools/master/";
 
 function evalFile(name,failSilently,cbok,cbfail) { 
-	getFile(CFGLIB.pathToLib+name,"txt",function (src) { var r= evalm(src,failSilently); cb(r); },cbfail);
+	getFile(CFGLIB.pathToLib+name,"txt",function (src) { var r= evalm(src,failSilently); cbok(r); },cbfail);
 }
 
 function evalFileOrDflt(name,failSilently,cbok,cbfail) {
