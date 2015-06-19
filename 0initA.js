@@ -1,3 +1,7 @@
+function evalFile(name,failSilently,cbok,cbfail) {
+  getFile(CFGLIB.pathToLib+name,"txt",function (src) { var r= evalm(src+' //# sourceURL='+name,failSilently); cbok(r); },cbfail);
+}
+
 function evalm(src,failSilently) {
   logm("DBG",9,"EVALM",src);
   var r;
